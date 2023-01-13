@@ -1,0 +1,6 @@
+{
+	"defaults" : {
+		"childFoo" : "default_foo",
+		"childBar" : 987
+	}
+}

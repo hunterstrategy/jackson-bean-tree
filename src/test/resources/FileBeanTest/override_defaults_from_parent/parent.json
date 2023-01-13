@@ -1,0 +1,8 @@
+{
+	"foo": "value",
+	"bar": 42,
+	"baz": {
+		"childBar": 1234,
+		"childFoo": "fromParent"
+	}
+}

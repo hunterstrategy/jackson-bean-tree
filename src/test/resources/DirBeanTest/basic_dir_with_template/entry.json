@@ -1,0 +1,6 @@
+{
+    "name": "entry",
+    "defaultChildBean": {
+    	"childBar":123
+    }
+}
