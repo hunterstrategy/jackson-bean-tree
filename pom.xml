@@ -2,9 +2,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.hunterstrategy</groupId>
+    <groupId>io.github.hunterstrategy</groupId>
     <artifactId>jackson-bean-tree</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>Jackson Bean Tree</name>
+    <description>A utility to walk file trees and load them into POJOs, with Jackson</description>
+    <url>https://github.com/hunterstrategy/jackson-bean-tree</url>
 
     <organization>
         <name>Hunter Strategy LLC</name>
@@ -19,7 +24,28 @@
         </license>
     </licenses>
 
-    <name>Jackson Bean Tree</name>
+    <scm>
+        <url>https://github.com/hunterstrategy/jackson-bean-tree/tree/main</url>
+        <connection>scm:git:git://github.com:hunterstrategy/jackson-bean-tree.git</connection>
+        <developerConnection>scm:git:ssh://github.com:hunterstrategy/jackson-bean-tree.git</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <name>Nexus Release Repository</name>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <developers>
+        <developer>
+            <name>Hunter Strategy</name>
+            <email>contact@hunterstrategy.net</email>
+            <organization>Hunter Strategy</organization>
+            <organizationUrl>http://www.hunterstrategy.net</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,6 +53,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <jackson.version>[2.14.1,)</jackson.version>
         <findsecbugs.version>1.12.0</findsecbugs.version>
+        <mdoclet.version>2.2.0</mdoclet.version>
     </properties>
 
     <dependencies>
@@ -63,6 +90,16 @@
                     <version>3.10.1</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+                <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.8</version>
@@ -89,6 +126,80 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>jdk-version</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <jdk>[17,)</jdk>
+            </activation>
+            <properties>
+                <mdoclet.version>3.1.0</mdoclet.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>env.RELEASE</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <doclet>org.jdrupes.mdoclet.MDoclet</doclet>
+                            <docletArtifact>
+                                <groupId>org.jdrupes.mdoclet</groupId>
+                                <artifactId>doclet</artifactId>
+                                <version>${mdoclet.version}</version>
+                            </docletArtifact>
+                            <additionalJOptions>
+                                <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+                                <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+                            </additionalJOptions>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>auto-java</id>
             <activation>

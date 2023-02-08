@@ -75,7 +75,7 @@ public @interface BeanCollection {
          * values will be either the loaded file name, or the result of
          * the Nameable interface.
          *
-         * In other words, scan for VALUE/*.json (or configured extension).
+         * In other words, scan for `VALUE/*.json` (or configured extension).
          */
         CONF_DIR,
         /**
@@ -87,7 +87,7 @@ public @interface BeanCollection {
          * an 'account.json' file. The mapped name will be the parent directory
          * name, or the result of the Nameable interface.
          *
-         * In other words, scan for *\/VALUE.json (or configured extension).
+         * In other words, scan for `*\/VALUE.json` (or configured extension).
          */
         MULTI_DIRS;
     }
